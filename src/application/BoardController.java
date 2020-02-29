@@ -98,6 +98,8 @@ public class BoardController implements Initializable{
     Spinner<Integer>[] playerDepth = new Spinner[2];
     private Deque<State> deque = new ArrayDeque<>();
     BoardState boardState = new BoardState();
+	int depth;
+	int maxDepth;
 
 //    public BoardController(BoardState state, State currState) {
 //    	this.state = state;
@@ -129,8 +131,13 @@ public class BoardController implements Initializable{
 		            @Override
 		            public void handle(MouseEvent event) {
 
-		            	boardState.setState(currState);
+						previousOneStepAgoState = activateMinMax(currState);
+
+//		            	boardState.setState(currState);
+
+						deque.push(previousOneStepAgoState);
 		            	//TODO: something
+
 		            	Node source = (Node)event.getSource() ;
 		            	Integer rowIndex = GridPane.getRowIndex(source);
 		            	Integer colIndex = GridPane.getColumnIndex(source);
@@ -159,12 +166,24 @@ public class BoardController implements Initializable{
 		initNewGame();
 	}
 
-//	public BoardState setCurrentState() {
-//
-//		BoardState boardState = new BoardState();
-//		boardState.setState(currState);
-//		return boardState;
-//	}
+	State activateMinMax(State currState){
+		State newState = new State();
+
+		// player has valid moves
+			for(int i = 0; i<State.boardSize; i++){
+				for(int j = 0; j<State.boardSize; j++){
+
+						newState.copyBoardState(currState.boardState);
+						newState.isMax = !(currState.isMax);
+						newState.depth = currState.depth + 1;
+						newState.rowMove = i;
+						newState.colMove = j;
+				}
+			}
+		return newState;
+
+	}
+
 
 	void checkAndPlay(){
 		// play AI computer move if continuous game is selected and the current 
@@ -227,15 +246,13 @@ public class BoardController implements Initializable{
 
 		blackScore.setText(Integer.toString(currState.blackScore));
 		whiteScore.setText(Integer.toString(currState.whiteScore));
-
 	}
 
 	@FXML
 	void GoBackOneStep() {
 
-//		currState =  deque.pop();
+		currState =  deque.pop();
 
-		currState = boardState.getState();
 		for(int i=0; i<boardSize; i++){
 			for(int j=0; j<boardSize; j++){
 				if(currState.boardState[i][j] == 0){ // black piece
