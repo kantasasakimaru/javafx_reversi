@@ -97,15 +97,6 @@ public class BoardController implements Initializable{
     ComboBox<String>[] playerType = new ComboBox[2];
     Spinner<Integer>[] playerDepth = new Spinner[2];
     private Deque<State> deque = new ArrayDeque<>();
-    BoardState boardState = new BoardState();
-	int depth;
-	int maxDepth;
-
-//    public BoardController(BoardState state, State currState) {
-//    	this.state = state;
-//    	this.currState = currState;
-//	}
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -132,9 +123,7 @@ public class BoardController implements Initializable{
 		            public void handle(MouseEvent event) {
 
 						previousOneStepAgoState = activateMinMax(currState);
-
-//		            	boardState.setState(currState);
-
+						// 一手前の状態をキューに保存
 						deque.push(previousOneStepAgoState);
 		            	//TODO: something
 
@@ -166,20 +155,20 @@ public class BoardController implements Initializable{
 		initNewGame();
 	}
 
-	State activateMinMax(State currState){
+
+	/**
+	 * 一手前の状態をスタックに保存する
+	 * @param currState
+	 * @return
+	 */
+	private State activateMinMax(State currState){
 		State newState = new State();
 
-		// player has valid moves
-			for(int i = 0; i<State.boardSize; i++){
-				for(int j = 0; j<State.boardSize; j++){
-
-						newState.copyBoardState(currState.boardState);
-						newState.isMax = !(currState.isMax);
-						newState.depth = currState.depth + 1;
-						newState.rowMove = i;
-						newState.colMove = j;
-				}
+		for(int i = 0; i<State.boardSize; i++){
+			for(int j = 0; j<State.boardSize; j++){
+				newState.copyBoardState(currState.boardState);
 			}
+		}
 		return newState;
 
 	}
@@ -248,7 +237,45 @@ public class BoardController implements Initializable{
 		whiteScore.setText(Integer.toString(currState.whiteScore));
 	}
 
+
+	/**
+	 * 黒玉の数を数える
+	 * @param boardState
+	 * @return
+	 */
+	private int updateBlackScore(int boardState[][]){
+		int bScore = 0;
+		for(int i=0; i<boardSize; i++){
+			for(int j=0; j<boardSize; j++){
+				if(boardState[i][j] == 0){
+					bScore++;
+				}
+			}
+		}
+		return bScore;
+	}
+
+	/**
+	 * 白玉の数を数える
+	 * @param boardState
+	 * @return
+	 */
+	private int updateWhaiteScore(int boardState[][]){
+		int wScore = 0;
+		for(int i=0; i<boardSize; i++){
+			for(int j=0; j<boardSize; j++){
+				if(boardState[i][j] == 1){
+					wScore++;
+				}
+			}
+		}
+		return wScore;
+	}
+
 	@FXML
+	/**
+	 * 一手前の状態に戻る
+	 */
 	void GoBackOneStep() {
 
 		currState =  deque.pop();
@@ -266,6 +293,10 @@ public class BoardController implements Initializable{
 				}
 			}
 		}
+
+
+		currState.blackScore = updateBlackScore(currState.boardState);
+		currState.whiteScore = updateWhaiteScore(currState.boardState);
 
 		blackScore.setText(Integer.toString(currState.blackScore));
 		whiteScore.setText(Integer.toString(currState.whiteScore));
