@@ -296,16 +296,6 @@
           <line>282</line>
           <option name="timeStamp" value="100" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/application/BoardController.java</url>
-          <line>126</line>
-          <option name="timeStamp" value="105" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/application/BoardController.java</url>
-          <line>124</line>
-          <option name="timeStamp" value="108" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>

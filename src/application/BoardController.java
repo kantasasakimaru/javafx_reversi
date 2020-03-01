@@ -132,14 +132,14 @@ public class BoardController implements Initializable{
 		            	Integer colIndex = GridPane.getColumnIndex(source);
 		            	if(currPlayer == blackPlayer){
 		        			if(!(blackType.getValue().equalsIgnoreCase("player"))){
-		        			   msgStr += "Computer's turn. please click on 'Play AI move'\n";
+		        			   msgStr += "コンピュータのターンです'\n";
 		        			   msgBox.setText(msgStr);
 		        			   return;
 		        			}
 		        		 }
 		        		else{
 		        			if(!(whiteType.getValue().equalsIgnoreCase("player"))){
-		        				   msgStr += "Computer's turn. please click on 'Play AI move'\n";
+		        				   msgStr += "コンピュータのターンです'\n";
 		        				   msgBox.setText(msgStr);
 		        				   return;
 		        				}
@@ -212,7 +212,7 @@ public class BoardController implements Initializable{
 			};
 		}
 		else{
-			msgStr += "illegal move, try again \n";
+			msgStr += "そこには置けません \n";
 			msgBox.setText(msgStr);
 		}
 	}
@@ -295,6 +295,7 @@ public class BoardController implements Initializable{
 		}
 
 
+		// TODO 相手がコンピュータの場合と人の場合で次どちらのターンなのか判別できるようにする
 		currState.blackScore = updateBlackScore(currState.boardState);
 		currState.whiteScore = updateWhaiteScore(currState.boardState);
 
@@ -307,6 +308,15 @@ public class BoardController implements Initializable{
 	void passHandler() {
 		int nextPlayer = (currPlayer + 1)%2;
 		currPlayer = nextPlayer;
+		msgStr += "パスが選択されました.\n";
+		msgBox.setText(msgStr);
+		if(currPlayer == 0) {
+			msgStr += "黒のターンです.\n";
+			msgBox.setText(msgStr);
+		} else if (currPlayer == 1) {
+			msgStr += "白のターンです.\n";
+			msgBox.setText(msgStr);
+		}
 	}
 
 	@FXML
@@ -332,7 +342,7 @@ public class BoardController implements Initializable{
 	    		action = computerMoves.getAlphaBetaAction(currState, playerDepth[currPlayer].getValue(), currPlayer);	
 	    		break;
 	    	case "Player":
-	    		msgStr += "Player's turn. please select a move \n";
+	    		msgStr += "プレイヤーのターンです. マスを選択してください \n";
 	    		msgBox.setText(msgStr);
 	    		return;
     	}
@@ -343,12 +353,12 @@ public class BoardController implements Initializable{
     	else{ // player has no legal moves
     		String TempMsg = "";
     		if(currPlayer == 0){
-    			TempMsg += "Black";
+    			TempMsg += "黒";
     		}
     		else{
-    			TempMsg += "White";
+    			TempMsg += "白";
     		}
-    		TempMsg += " player has no legal moves. \n";
+    		TempMsg += " は置く場所がありません. パスします\n";
     		
     		// if the next player has no legal moves
     		if(!currState.hasValidMoves(nextPlayer)){
@@ -416,13 +426,13 @@ public class BoardController implements Initializable{
     		}
     		else{ // player has no legal moves but the other player can play
 	    		if(player == blackPlayer){
-	    			msgStr += "Black ";
+	    			msgStr += "黒";
 	    		}
 	    		else{
-	    			msgStr += "White";
+	    			msgStr += "白";
 	    		}
 	    		//print message to message box
-	    		msgStr += " player has no legal moves\n";
+	    		msgStr += " 置ける場所がありません. パスします\n";
 				msgBox.setText(msgStr);
 
     		}
@@ -435,10 +445,10 @@ public class BoardController implements Initializable{
     void endGame(){
     	msgStr += "No more legal moves. \n THE GAME HAS ENDED \n";
 		if(Integer.parseInt(blackScore.getText()) > Integer.parseInt(whiteScore.getText())){
-			msgStr += "Black player is the winner";
+			msgStr += "黒の勝ちです";
 		}
 		else if(Integer.parseInt(blackScore.getText()) < Integer.parseInt(whiteScore.getText())){
-			msgStr += "White player is the winner";
+			msgStr += "白の勝ちです";
 		}
 		else{
 			msgStr += "It's a tie";
